@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.webkit.MimeTypeMap
 import android.widget.EditText
 import androidx.annotation.NonNull
 import androidx.core.widget.doOnTextChanged
@@ -18,6 +19,8 @@ import dev.henryleunghk.flutter_native_text_input.MyEditText.KeyBoardInputCallba
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
+import io.flutter.util.PathUtils.getFilesDir
+import java.io.File
 
 
 val TAG: String = "NativeTextInput"
@@ -45,11 +48,16 @@ internal class NativeTextInput(context: Context, id: Int, creationParams: Map<St
 //        }
         editText.setKeyBoardInputCallbackListener { inputContentInfo, flags, opts ->
             //you will get your gif/png/jpg here in opts bundle
+            val fileExtension = MimeTypeMap.getSingleton()
+                .getExtensionFromMimeType(inputContentInfo.description.getMimeType(0))
+            val filename = "extra_file.$fileExtension"
+            val richContentFile = File(getFilesDir(context), filename).path
 
-            channel.invokeMethod("inputFileSelect", mapOf("file" to inputContentInfo.contentUri.path.toString()))
+            
+            channel.invokeMethod("inputFileSelect", mapOf("file" to richContentFile.toString()))
 
-//            Log.e("GIF1",inputContentInfo.contentUri.toString())
-//            Log.e("GIF2",inputContentInfo.contentUri.path.toString())
+            Log.e("GIF1",inputContentInfo.contentUri.toString())
+            Log.e("GIF2",inputContentInfo.contentUri.path.toString())
 //            Log.e("GIF2",inputContentInfo.contentUri.path.toString())
         }
 
