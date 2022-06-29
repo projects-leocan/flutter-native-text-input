@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
+import android.os.Environment
+import android.os.FileUtils
 import android.text.InputType
 import android.util.Log
 import android.util.TypedValue
@@ -17,8 +19,10 @@ import androidx.core.widget.doOnTextChanged
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
-import io.flutter.util.PathUtils.getFilesDir
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 
 val TAG: String = "NativeTextInput"
 internal class NativeTextInput(context: Context, id: Int, creationParams: Map<String?, Any?>, channel: MethodChannel) : PlatformView, MethodChannel.MethodCallHandler {
@@ -44,15 +48,42 @@ internal class NativeTextInput(context: Context, id: Int, creationParams: Map<St
 //        }
         editText.setKeyBoardInputCallbackListener { inputContentInfo, flags, opts ->
             //you will get your gif/png/jpg here in opts bundle
-            val fileExtension = MimeTypeMap.getSingleton()
-                .getExtensionFromMimeType(inputContentInfo.description.getMimeType(0))
-            val filename = "extra_file.$fileExtension"
-            val richContentFile = File(getFilesDir(context), filename).path
+//            val fileExtension = MimeTypeMap.getSingleton()
+//                .getExtensionFromMimeType(inputContentInfo.description.getMimeType(0))
+//            val filename = "extra_file.$fileExtension"
+//            val richContentFile = File(Environment.getExternalStorageDirectory().absolutePath + "/Android/data/com.benangstaging.app", filename).path
+//            val file = File.createTempFile(
+//                "image",
+//                ".$fileExtension",
+//                File(Environment.getExternalStorageDirectory().absolutePath + "/benangstaging")
+//            )
+//            FileProvider.getUriForFile(
+//                context, BuildConfig.LIBRARY_PACKAGE_NAME + ".provider",
+//                file
+//            )
 
-            channel.invokeMethod("inputFileSelect", mapOf("file" to richContentFile.toString()))
 
-//            Log.e("GIF1",inputContentInfo.contentUri.toString())
-//            Log.e("GIF2",inputContentInfo.contentUri.path.toString())
+//            val source = File(inputContentInfo.contentUri.path)
+//
+//            val destinationPath: String =
+//                Environment.getExternalStorageDirectory().absolutePath
+//                    .toString() + "/Benang/abc."+fileExtension
+//            val destination = File(destinationPath)
+//            try {
+//                copyFile(source, destination)
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//            }
+            Log.e("GIF1", inputContentInfo.contentUri.toString())
+
+            Log.e("GIF2",inputContentInfo.description.toString())
+            Log.e("GIF3",inputContentInfo.toString())
+//            Log.e("GIF2", inputContentInfo.linkUri.toString())
+//            Log.e("GIF3",inputContentInfo.linkUri!!.path.toString())
+            Log.e("GIF4",inputContentInfo.contentUri.path.toString())
+            channel.invokeMethod("inputFileSelect", mapOf("file" to inputContentInfo.contentUri.path.toString()))
+
+
         }
 
         if (creationParams["fontColor"] != null) {
@@ -260,6 +291,12 @@ internal class NativeTextInput(context: Context, id: Int, creationParams: Map<St
         inputMethodManager.hideSoftInputFromWindow(editText.windowToken, 0)
     }
 
+    @Throws(IOException::class)
+    fun copyFile(source: File?, destination: File?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            FileUtils.copy(FileInputStream(source), FileOutputStream(destination))
+        }
+    }
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: MethodChannel.Result) {
         if (call.method == "getContentHeight") {
             var contentHeight = editText.lineHeight / scaledDensity * editText.lineCount
