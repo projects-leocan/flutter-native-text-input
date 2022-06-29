@@ -113,6 +113,7 @@ class NativeTextInput extends StatefulWidget {
     this.textContentType,
     this.onChanged,
     this.onEditingComplete,
+    this.onFileSelect,
     this.onSubmitted,
     this.onTap,
   }) : super(key: key);
@@ -209,6 +210,8 @@ class NativeTextInput extends StatefulWidget {
   ///
   /// Default: null
   final ValueChanged<String>? onChanged;
+
+  final ValueChanged<String?>? onFileSelect;
 
   /// Called when the user submits editable content (e.g., user presses the "done" button on the keyboard).
   /// (https://api.flutter.dev/flutter/material/TextField/onEditingComplete.html)
@@ -534,6 +537,10 @@ class _NativeTextInputState extends State<NativeTextInput> {
         final int? lineIndex = call.arguments["currentLine"];
         _inputValueChanged(text, lineIndex);
         return null;
+      case "inputFileSelect":
+        final String? text = call.arguments["file"];
+        _inputFileSelect(text);
+        return null;
 
       case "inputStarted":
         _inputStarted();
@@ -602,6 +609,19 @@ class _NativeTextInputState extends State<NativeTextInput> {
         setState(() {});
       }
     }
+  }
+  void _inputFileSelect(String? text) async {
+    if (widget.onFileSelect != null) {
+      widget.onFileSelect!(text);
+    } else {
+      final channel = await _channel.future;
+      channel.invokeMethod("unfocus");
+      if (_effectiveFocusNode.hasFocus) FocusScope.of(context).unfocus();
+    }
+    // if (widget.onSubmitted != null) {
+    //   await Future.delayed(const Duration(milliseconds: 100));
+    //   widget.onSubmitted!(text);
+    // }
   }
 
   void _singleTapRecognized() => widget.onTap?.call();

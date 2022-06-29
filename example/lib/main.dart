@@ -77,16 +77,20 @@ class HomePage extends StatelessWidget {
             child: Container(
               height: 30,
               child: NativeTextInput(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black87,
-                    width: 2,
-                  ),
-                ),
+                // decoration: BoxDecoration(
+                //   border: Border.all(
+                //     color: Colors.black87,
+                //     width: 2,
+                //   ),
+                // ),
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black54,
                 ),
+                onFileSelect: (value){
+                  debugPrint("---FILE SELECTED---");
+                  debugPrint(value.toString());
+                },
                 minHeightPadding: 4,
                 textCapitalization: TextCapitalization.sentences,
                 placeholder: "placeholder",
@@ -102,6 +106,7 @@ class HomePage extends StatelessWidget {
                 keyboardType: KeyboardType.defaultType,
                 onChanged: _onChangeText,
                 onSubmitted: _onSubmittedText,
+
                 focusNode: _focusNode,
               ),
             ),
