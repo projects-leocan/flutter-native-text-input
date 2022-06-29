@@ -12,19 +12,15 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.webkit.MimeTypeMap
-import android.widget.EditText
 import androidx.annotation.NonNull
 import androidx.core.widget.doOnTextChanged
-import dev.henryleunghk.flutter_native_text_input.MyEditText.KeyBoardInputCallbackListener
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.util.PathUtils.getFilesDir
 import java.io.File
 
-
 val TAG: String = "NativeTextInput"
-
 internal class NativeTextInput(context: Context, id: Int, creationParams: Map<String?, Any?>, channel: MethodChannel) : PlatformView, MethodChannel.MethodCallHandler {
     private val context: Context
     private val scaledDensity: Float
@@ -53,11 +49,9 @@ internal class NativeTextInput(context: Context, id: Int, creationParams: Map<St
             val filename = "extra_file.$fileExtension"
             val richContentFile = File(getFilesDir(context), filename).path
 
-            
             channel.invokeMethod("inputFileSelect", mapOf("file" to richContentFile.toString()))
 
-            Log.e("GIF1",inputContentInfo.contentUri.toString())
-            Log.e("GIF2",inputContentInfo.contentUri.path.toString())
+//            Log.e("GIF1",inputContentInfo.contentUri.toString())
 //            Log.e("GIF2",inputContentInfo.contentUri.path.toString())
         }
 
@@ -82,7 +76,7 @@ internal class NativeTextInput(context: Context, id: Int, creationParams: Map<St
         }
 
         if (creationParams["fontWeight"] != null &&
-                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val fontWeight = creationParams["fontWeight"] as String
             if (fontWeight == "FontWeight.w100") {
                 editText.typeface = Typeface.create(editText.typeface, 100, false)
