@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_text_input/flutter_native_text_input.dart';
@@ -20,10 +22,18 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final FocusNode _focusNode = FocusNode();
 
+  String? _gif;
+
   _onChangeText(value) => debugPrint("_onChangeText: $value");
+
   _onSubmittedText(value) => debugPrint("_onSubmittedText: $value");
 
   @override
@@ -90,6 +100,9 @@ class HomePage extends StatelessWidget {
                 onFileSelect: (value){
                   debugPrint("---FILE SELECTED---");
                   debugPrint(value.toString());
+                  setState((){
+                    _gif = value!;
+                  });
                 },
                 minHeightPadding: 4,
                 textCapitalization: TextCapitalization.sentences,
@@ -121,6 +134,15 @@ class HomePage extends StatelessWidget {
                       builder: (_) => MoreUseCaseListingPage()));
                 }),
           ),
+
+          _gif != null ? SizedBox(
+            width: 300,
+            height: 300,
+            child: Image.network(
+              _gif!,
+              fit: BoxFit.cover,
+            ),
+          ):Container(),
         ],
       ),
     );

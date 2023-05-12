@@ -14,6 +14,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.webkit.MimeTypeMap
+import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.core.widget.doOnTextChanged
 import io.flutter.plugin.common.MethodCall
@@ -78,12 +79,13 @@ internal class NativeTextInput(context: Context, id: Int, creationParams: Map<St
 
             Log.e("GIF2",inputContentInfo.description.toString())
             Log.e("GIF3",inputContentInfo.toString())
-//            Log.e("GIF2", inputContentInfo.linkUri.toString())
-//            Log.e("GIF3",inputContentInfo.linkUri!!.path.toString())
             Log.e("GIF4",inputContentInfo.contentUri.path.toString())
-            channel.invokeMethod("inputFileSelect", mapOf("file" to inputContentInfo.contentUri.path.toString()))
-
-
+            Log.d("HackFlutterEngine", inputContentInfo.linkUri.toString())
+            if(inputContentInfo.linkUri != null){
+                channel.invokeMethod("inputFileSelect", mapOf("file" to inputContentInfo.linkUri.toString()))
+            }else{
+                Toast.makeText(context,"This GIF can't be supported",Toast.LENGTH_SHORT).show();
+            }
         }
 
         if (creationParams["fontColor"] != null) {

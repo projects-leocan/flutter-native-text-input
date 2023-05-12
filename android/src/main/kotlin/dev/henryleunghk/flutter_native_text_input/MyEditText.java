@@ -30,11 +30,11 @@ public class MyEditText extends EditText {
     }
 
     private void initView() {
-//        imgTypeString = new String[]{"image/png",
-//                "image/gif",
-//                "image/jpeg",
-//                "image/webp"};
-        imgTypeString = new String[]{"image/gif"};
+        imgTypeString = new String[]{"image/png",
+                "image/gif",
+                "image/jpeg",
+                "image/webp"};
+//        imgTypeString = new String[]{"image/gif"};
     }
 
     @Override
